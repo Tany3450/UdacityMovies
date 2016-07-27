@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">UdacityMovies</string>
+    <string name="settings_title">Settings</string>
+    <string name="title_movie_order">Sort by</string>
+    <string name="details_title">Details</string>
+    <string name="general_settings_title">General</string>
+    <string name="api_key" translatable="false">8843b049a06411f051b8cc5857095472</string>
+    <string-array name="entries_list_preference_movie_order">
+        <item><string name="pref_order_popular">Most Popular</string></item>
+        <item><string name="pref_order_top_rated">Top Rated</string></item>
+    </string-array>
+    <string-array name="entryvalues_list_preference_movie_order">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
 </resources>

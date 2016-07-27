@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:background="@android:color/darker_gray"
+        android:id="@+id/movie_title_text_view"
+        android:textSize="30dp"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="Default_Title"/>
+    <ImageView
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:minHeight="200dp"
+        android:minWidth="150dp"
+        android:scaleType="fitXY"
+        android:layout_below="@id/movie_title_text_view"
+        android:id="@+id/poster_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@id/movie_title_text_view"
+        android:id="@+id/year_text"
+        android:textSize="25dp"
+        android:layout_toRightOf="@id/poster_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_marginLeft="15dp"
+        android:layout_below="@id/year_text"
+        android:layout_toRightOf="@id/poster_image"
+        android:id="@+id/vote_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Button
+        android:layout_marginLeft="15dp"
+        android:text="MARK AS FAVORITE"
+        android:layout_below="@id/vote_text"
+        android:layout_toRightOf="@id/poster_image"
+        android:id="@+id/favorite_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@id/poster_image">
+        <TextView
+            android:textSize="15dp"
+            android:id="@+id/summary_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!--Trailers vs buraya-->
+    </ScrollView>
+
+</RelativeLayout>
