@@ -18,7 +18,7 @@ public class ImageAdapter extends BaseAdapter {
         mContext = c;
         float density=c.getResources().getDisplayMetrics().density;
         height =c.getResources().getDisplayMetrics().heightPixels/density;
-        if(density==1){
+        if(density<=1){
             height /=2;}
         else if(density>=3.5){
             height *=1.5;}

@@ -40,7 +40,7 @@ public class MoviePostersFragment extends Fragment {
     public void onResume() {
         super.onResume();  // Always call the superclass method first
         if(lastpref !=null&&!lastpref.equals(settings.getString(("sort_order_list"), ""))){
-            if(isOnline()){ new RetrieveMovies().execute();}
+            if(isOnline()){ movieList.clear(); new RetrieveMovies().execute();}
             else{AlertMsg();}
         }
     }

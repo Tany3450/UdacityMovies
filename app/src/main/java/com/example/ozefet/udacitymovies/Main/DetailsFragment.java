@@ -1,5 +1,9 @@
 package com.example.ozefet.udacitymovies.Main;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
@@ -49,7 +53,8 @@ public class DetailsFragment extends Fragment {
         mtext.setText(String.valueOf(selected_movie.voteaverage)+"/10");
         mtext = (TextView) view.findViewById(R.id.summary_text);
         mtext.setText("Summary: "+selected_movie.overview);
-        Picasso.with(getActivity()).load("http://image.tmdb.org/t/p/w185/"+selected_movie.poster).into((ImageView)view.findViewById(R.id.poster_image));
+        if(isOnline()){Picasso.with(getActivity()).load("http://image.tmdb.org/t/p/w185/"+selected_movie.poster).into((ImageView)view.findViewById(R.id.poster_image));}
+        else{AlertMsg();}
     }
 
     public static DetailsFragment newInstance() {
@@ -58,4 +63,19 @@ public class DetailsFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    public void AlertMsg(){
+        new AlertDialog.Builder(getActivity())
+                .setTitle("No connection!")
+                .setMessage("You need a valid internet connection to use all of the features.")
+                .setNeutralButton("OK!", null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();}
 }
