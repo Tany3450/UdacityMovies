@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class Movie implements Parcelable {
     Boolean isadult;
-    String poster;
+    String poster_url;
     String overview;
     Date releasedate;
     int id;
@@ -18,6 +18,10 @@ public class Movie implements Parcelable {
     double popularity;
     int votecount;
     double voteaverage;
+    byte[] poster_imagedata;
+
+    public Movie() {
+    }
 
     @Override
     public int describeContents() {
@@ -27,29 +31,29 @@ public class Movie implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.isadult);
-        dest.writeString(this.poster);
+        dest.writeString(this.poster_url);
         dest.writeString(this.overview);
-        dest.writeSerializable(this.releasedate);
+        dest.writeLong(this.releasedate != null ? this.releasedate.getTime() : -1);
         dest.writeInt(this.id);
         dest.writeString(this.title);
         dest.writeDouble(this.popularity);
         dest.writeInt(this.votecount);
         dest.writeDouble(this.voteaverage);
-    }
-
-    public Movie() {
+        dest.writeByteArray(this.poster_imagedata);
     }
 
     protected Movie(Parcel in) {
         this.isadult = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.poster = in.readString();
+        this.poster_url = in.readString();
         this.overview = in.readString();
-        this.releasedate = (Date) in.readSerializable();
+        long tmpReleasedate = in.readLong();
+        this.releasedate = tmpReleasedate == -1 ? null : new Date(tmpReleasedate);
         this.id = in.readInt();
         this.title = in.readString();
         this.popularity = in.readDouble();
         this.votecount = in.readInt();
         this.voteaverage = in.readDouble();
+        this.poster_imagedata = in.createByteArray();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {

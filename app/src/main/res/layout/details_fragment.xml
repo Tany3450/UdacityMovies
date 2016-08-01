@@ -15,7 +15,7 @@
     <ImageView
         android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
-        android:minHeight="200dp"
+        android:minHeight="150dp"
         android:minWidth="150dp"
         android:scaleType="fitXY"
         android:layout_below="@id/movie_title_text_view"
@@ -41,6 +41,7 @@
     <Button
         android:layout_marginLeft="15dp"
         android:text="MARK AS FAVORITE"
+        android:background="#D3D3D3"
         android:layout_below="@id/vote_text"
         android:layout_toRightOf="@id/poster_image"
         android:id="@+id/favorite_button"

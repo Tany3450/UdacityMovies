@@ -1,6 +1,8 @@
 package com.example.ozefet.udacitymovies.Main;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -13,7 +15,7 @@ import java.util.List;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-
+    String lastpref;
     public ImageAdapter(Context c) {
         mContext = c;
         float density=c.getResources().getDisplayMetrics().density;
@@ -28,6 +30,9 @@ public class ImageAdapter extends BaseAdapter {
     if(mThumbIds!=null){
         return mThumbIds.size();
     }
+    else if(mThumbIds_local!=null){
+            return mThumbIds_local.size();
+        }
     else{return 0;}}
 
     public Object getItem(int position) {
@@ -49,16 +54,30 @@ public class ImageAdapter extends BaseAdapter {
            } else {
             imageView = (ImageView) convertView;
         }
-        Picasso.with(mContext).load(mThumbIds.get(position)).into(imageView);
+        if ("2".equals(lastpref)){  //checking for each image
+        Bitmap bmp = BitmapFactory.decodeByteArray(mThumbIds_local.get(position), 0, mThumbIds_local.get(position).length);
+        imageView.setImageBitmap(bmp);}
+        else{Picasso.with(mContext).load(mThumbIds.get(position)).into(imageView);}
+
         return imageView;
     }
 
     // references to our images
     List<String> mThumbIds=null;
+    List<byte[]> mThumbIds_local=null;
     float height;
 
-    public void updateList(List<String> data) {
+    public void updateList(List<String> data,String pref) {
         mThumbIds = data;
+        lastpref=pref;
         notifyDataSetChanged();
     }
+
+    public void updateList_local(List<byte[]> data, String pref) {
+        mThumbIds_local = data;
+        lastpref =pref;
+        mThumbIds=null;
+        notifyDataSetChanged();
+    }
+
    }
