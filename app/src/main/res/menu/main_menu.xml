@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu android:id="@+id/main_menu" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:UdacityMovies="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/settings"
         android:title="@string/settings_title" />
+    <item android:id="@+id/favorite_button" android:visible="false" UdacityMovies:showAsAction="always"
+        android:title="@string/mark_as_favorite" android:icon="@drawable/mark_as_favorite"> </item>
+    <item android:id="@+id/search" android:visible="false"
+        android:title="@string/search_title"
+        UdacityMovies:showAsAction="always"
+        UdacityMovies:actionViewClass="android.widget.SearchView" />
 </menu>

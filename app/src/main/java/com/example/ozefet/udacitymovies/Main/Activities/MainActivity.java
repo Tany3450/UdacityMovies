@@ -1,4 +1,4 @@
-package com.example.ozefet.udacitymovies.Main;
+package com.example.ozefet.udacitymovies.Main.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.ozefet.udacitymovies.Main.Fragments.MoviePostersFragment;
 import com.example.ozefet.udacitymovies.Main.Settings.SettingsActivity;
 import com.example.ozefet.udacitymovies.R;
 
@@ -17,6 +18,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
+        MenuItem mitem=(MenuItem) menu.findItem(R.id.favorite_button);
+        mitem.setVisible(false);
+        mitem=(MenuItem) menu.findItem(R.id.search);
+        mitem.setVisible(true);
         super.onCreateOptionsMenu(menu);
         return true;
     }

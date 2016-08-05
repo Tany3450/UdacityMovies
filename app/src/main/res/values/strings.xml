@@ -5,6 +5,7 @@
     <string name="favorited">Favorited</string>
     <string name="mark_as_favorite">MARK AS FAVORITE</string>
     <string name="summary">Summary</string>
+    <string name="search_title">Search</string>
     <string name="details_title">Details</string>
     <string name="general_settings_title">General</string>
     <string name="api_key" translatable="false">8843b049a06411f051b8cc5857095472</string>

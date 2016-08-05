@@ -1,4 +1,4 @@
-package com.example.ozefet.udacitymovies.Main.MovieData;
+package com.example.ozefet.udacitymovies.Main.MovieDB;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,11 +11,12 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + MovieContract.MovieEntry.TABLE_NAME + " (" +
                     MovieContract.MovieEntry.COLUMN_ID + " TEXT PRIMARY KEY, " +
-                    MovieContract.MovieEntry.COLUMN_POSTER + TEXT_TYPE + COMMA_SEP +
                     MovieContract.MovieEntry.COLUMN_OVERVIEW+ TEXT_TYPE + COMMA_SEP +
                     MovieContract.MovieEntry.COLUMN_RELEASEDATE + TEXT_TYPE + COMMA_SEP +
                     MovieContract.MovieEntry.COLUMN_TITLE + TEXT_TYPE + COMMA_SEP +
-                    MovieContract.MovieEntry.COLUMN_VOTEAVERAGE + TEXT_TYPE +
+                    MovieContract.MovieEntry.COLUMN_VOTEAVERAGE + TEXT_TYPE + COMMA_SEP+
+                    MovieContract.MovieEntry.COLUMN_BACKDROP_URL + TEXT_TYPE + COMMA_SEP+
+                    MovieContract.MovieEntry.COLUMN_GENRE + TEXT_TYPE +
             " )";
 
     private static final String SQL_DELETE_ENTRIES =

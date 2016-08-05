@@ -1,4 +1,4 @@
-package com.example.ozefet.udacitymovies.Main;
+package com.example.ozefet.udacitymovies.Main.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,11 +9,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.ozefet.udacitymovies.Main.Fragments.DetailsFragment;
 import com.example.ozefet.udacitymovies.Main.Settings.SettingsActivity;
 import com.example.ozefet.udacitymovies.R;
 
 public class DetailsActivity extends AppCompatActivity {
-
+    ActionBar actionBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +33,7 @@ public class DetailsActivity extends AppCompatActivity {
             Fragment detailsFragment= DetailsFragment.newInstance();
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container_movie_details, detailsFragment).commit();
+
         }
     }
     @Override
@@ -43,6 +45,8 @@ public class DetailsActivity extends AppCompatActivity {
                 return true;
             case android.R.id.home:
                 super.onBackPressed();
+               // Intent myintent=new Intent(getApplicationContext(),MainActivity.class);
+              //  startActivity(myintent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -52,14 +56,18 @@ public class DetailsActivity extends AppCompatActivity {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.main_menu, menu);
             super.onCreateOptionsMenu(menu);
-            return true;
-        } /**
+            return true;}
+    /**
      * Set up the {@link android.app.ActionBar}, if the API is available.
      */
     private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         if (actionBar != null) {
             // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-    }}
+    }
+    public void setActionBarTitle(String title){
+        actionBar.setTitle(title);
+    }
+}

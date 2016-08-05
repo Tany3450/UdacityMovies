@@ -1,4 +1,4 @@
-package com.example.ozefet.udacitymovies.Main.MovieData;
+package com.example.ozefet.udacitymovies.Main.MovieDB;
 
 import android.provider.BaseColumns;
 
@@ -15,12 +15,12 @@ public final class MovieContract {
     public static final class MovieEntry implements BaseColumns{
 
         public static final String TABLE_NAME="movies";
-
-        public static final String COLUMN_POSTER="image_info";
+        public static final String COLUMN_GENRE="genres";
         public static final String COLUMN_OVERVIEW="summary";
         public static final String COLUMN_RELEASEDATE= "release_year";
         public static final String COLUMN_ID="movie_id";
         public static final String COLUMN_TITLE="movie_name";
         public static final String COLUMN_VOTEAVERAGE="average_vote";
+        public static final String COLUMN_BACKDROP_URL="backdrop_url";
     }
 }
