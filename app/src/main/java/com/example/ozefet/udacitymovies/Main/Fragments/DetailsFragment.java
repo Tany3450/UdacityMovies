@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -33,6 +34,7 @@ import com.example.ozefet.udacitymovies.Main.Models.TrailerJsonDeserializer;
 import com.example.ozefet.udacitymovies.Main.MovieDB.MovieContract;
 import com.example.ozefet.udacitymovies.Main.MovieDB.MovieDbHelper;
 import com.example.ozefet.udacitymovies.R;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -85,11 +87,10 @@ public class DetailsFragment extends Fragment {
                 null  // The sort order
         );
         selected_movieItem = getActivity().getIntent().getExtras().getParcelable("movie_details");
-        //c.moveToFirst();
         while (c.moveToNext()&&!isfavorited){
              if(String.valueOf(selected_movieItem.id).equals(c.getString(c.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_ID)))){
               isfavorited=true;}
-        }c.close();//mDbHelper.close();
+        }c.close();
         return inflater.inflate(getFragmentLayoutId(), container, false);
     }
 
@@ -112,10 +113,6 @@ public class DetailsFragment extends Fragment {
         return R.layout.details_fragment;
     }
 
-//    private void initUserInterface(@NonNull  View view, @Nullable Bundle savedInstanceState) {
-//        savedInstanceState.getChar("");
-//    }
-
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
@@ -127,10 +124,11 @@ public class DetailsFragment extends Fragment {
             TrailerJsonDeserializer trailerJsonDeserializer =new TrailerJsonDeserializer();
             trailerJsonDeserializer.JsonDeserializerTrailer(view,"http://api.themoviedb.org/3/movie/"+selected_movieItem.id+"/videos?api_key=8843b049a06411f051b8cc5857095472");
             String genreids = "";
+            if(selected_movieItem.genres.size()!=0){
             for(int i=0;i<selected_movieItem.genres.size();i++){genreids+=selected_movieItem.genres.get(i)+",";
             mtext.setText(mtext.getText()+", "+ localgenrenames[Arrays.asList(localgenreids).indexOf(selected_movieItem.genres.get(i))]);}
             mtext.setText(mtext.getText().toString().substring(2,mtext.getText().length()));
-            genreids = genreids.substring(0, genreids.length()-1);
+            genreids = genreids.substring(0, genreids.length()-1);}
            movieJsonDeserializer.JsonDeserializerMovie(1,view,selected_movieItem.id,"discover/movie?with_genres="+genreids+"&sort_by=popularity.desc&api_key=8843b049a06411f051b8cc5857095472");
     }
         else {}
@@ -156,14 +154,24 @@ public class DetailsFragment extends Fragment {
         mtext.setText(selected_movieItem.overview);
 
         imageView=(ImageView)view.findViewById(R.id.poster_image);
-        String currentsetting=settings.getString(("sort_order_list"), "");
+        //String currentsetting=settings.getString(("sort_order_list"), "");
 //        if ("2".equals(currentsetting)){
 //            File f=new File(directory.getAbsolutePath(), selected_movieItem.id+".png");
 //            Picasso.with(getActivity()).load(f).into(imageView);
 //        }
        // else{
-            Picasso.with(getActivity()).load("http://image.tmdb.org/t/p/w500/"+ selected_movieItem.backdrop_url).into(imageView);
-    //}
+            Picasso.with(getActivity()).load("http://image.tmdb.org/t/p/w500/"+ selected_movieItem.backdrop_url).into(imageView, new Callback() {
+
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError() {
+                    imageView.setVisibility(View.GONE);
+                }
+            });
         }
 
 
@@ -186,7 +194,7 @@ public class DetailsFragment extends Fragment {
                 values.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, selected_movieItem.overview);
                 values.put(MovieContract.MovieEntry.COLUMN_RELEASEDATE, String.valueOf(cal.get(java.util.Calendar.YEAR)));
                 values.put(MovieContract.MovieEntry.COLUMN_VOTEAVERAGE, selected_movieItem.voteaverage);
-                    values.put(MovieContract.MovieEntry.COLUMN_BACKDROP_URL, selected_movieItem.backdrop_url);
+                values.put(MovieContract.MovieEntry.COLUMN_BACKDROP_URL, selected_movieItem.backdrop_url);
                 values.put(MovieContract.MovieEntry.COLUMN_GENRE, TextUtils.join(",", selected_movieItem.genres));
 
                 db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
@@ -197,15 +205,27 @@ public class DetailsFragment extends Fragment {
                     FileOutputStream fos = null;
                     try {
                         fos = new FileOutputStream(mypath);
-                        downloadImage("http://image.tmdb.org/t/p/w185/"+selected_movieItem.poster_url,fos);
+                        final FileOutputStream finalFos = fos;
+                        Thread thread = new Thread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                try
+                                {
+                                    downloadImage("http://image.tmdb.org/t/p/w185"+selected_movieItem.poster_url, finalFos);
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                        thread.start();
+
                     } catch (Exception e) {
                         e.printStackTrace();
-                    } finally {
-                        try {
-                            fos.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
                     }
                     mitem.setTitle(getResources().getString(R.string.favorited));
                 isfavorited=true;
@@ -220,7 +240,6 @@ public class DetailsFragment extends Fragment {
                     db.delete(MovieContract.MovieEntry.TABLE_NAME, selection, null);
                     new File(directory.getAbsolutePath(), selected_movieItem.id+".png").delete();
                 }
-                       // mDbHelper.close();
                 return true;
                     default:
                         return super.onOptionsItemSelected(item);

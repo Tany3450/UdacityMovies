@@ -1,6 +1,7 @@
 package com.example.ozefet.udacitymovies.Main.Fragments;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,33 +44,29 @@ public class MoviePostersFragment extends Fragment {
     public void onResume() {
         super.onResume();  // always call the superclass method first
         String currentsetting=settings.getString(("sort_order_list"), "");
+        boolean isexecuted=false;
         if(lastpref!=null&&currentsetting!=""&&!lastpref.equals(currentsetting)){
             if ("2".equals(currentsetting)){
-                imageAdapter= new ImageAdapter(getActivity());movieposters.setAdapter(imageAdapter); movieItemList.clear();GetLocalMovies();}
+                isexecuted=true;imageAdapter= new ImageAdapter(getActivity());movieposters.setAdapter(imageAdapter); movieItemList.clear();GetLocalMovies();}
             else if(isOnline()){
-                imageAdapter= new ImageAdapter(getActivity());movieposters.setAdapter(imageAdapter); movieItemList.clear();  lastpref = settings.getString(("sort_order_list"), "");
+                lastpref = currentsetting;
                 if (lastpref.equals("")){
                     lastpref ="0";}
                 String URI=null;
                 if (lastpref.equals("0")) {URI= "http://api.themoviedb.org/3/movie/popular?api_key="+getString(R.string.api_key);}
                 else if(lastpref.equals("1")){URI= "http://api.themoviedb.org/3/movie/top_rated?api_key="+getString(R.string.api_key);}
 
-
                 MovieJsonDeserializer movieJsonDeserializer =new MovieJsonDeserializer();
                 movieJsonDeserializer.JsonDeserializerMovie(0,getView(),0, URI);}
 
-            else{AlertMsg();}
-                                            }
-        if ("2".equals(currentsetting)){imageAdapter= new ImageAdapter(getActivity());movieposters.setAdapter(imageAdapter); movieItemList.clear();GetLocalMovies();}
+            else{AlertMsg();}}
+        if ("2".equals(currentsetting)&&!isexecuted){ movieItemList.clear();GetLocalMovies();}
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if(savedInstanceState == null){
-            int a=5;
-        }
         // Inflate the layout for this fragment
         return inflater.inflate(getFragmentLayoutId(), container, false);
     }
@@ -80,9 +77,7 @@ public class MoviePostersFragment extends Fragment {
         imageAdapter= new ImageAdapter(getActivity());
         movieposters.setAdapter(imageAdapter);
         settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String currentsetting=settings.getString(("sort_order_list"), "");
-        if ("2".equals(settings.getString(("sort_order_list"), ""))){GetLocalMovies();}
-        else if(isOnline()){
+        if((isOnline()&&!"2".equals(settings.getString(("sort_order_list"), "")))){
 
             lastpref = settings.getString(("sort_order_list"), "");
             if (lastpref.equals("")){
@@ -91,19 +86,8 @@ public class MoviePostersFragment extends Fragment {
             if (lastpref.equals("0")) {URI= "http://api.themoviedb.org/3/movie/popular?api_key="+getString(R.string.api_key);}
             else if(lastpref.equals("1")){URI= "http://api.themoviedb.org/3/movie/top_rated?api_key="+getString(R.string.api_key);}
             MovieJsonDeserializer movieJsonDeserializer =new MovieJsonDeserializer();
-            movieJsonDeserializer.JsonDeserializerMovie(0,getView(),0, URI);
-
-        }
-        else{AlertMsg();}
-        movieposters.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent myintent=new Intent(getActivity().getApplicationContext(),DetailsActivity.class);
-                myintent.putExtra("movie_details", movieItemList.get(i));
-                startActivity(myintent);
-            }
-        });
+            movieJsonDeserializer.JsonDeserializerMovie(0,getView(),0, URI);}
+        else if(!isOnline()){AlertMsg();}
         }
 
     private void GetLocalMovies() {
@@ -151,6 +135,15 @@ public class MoviePostersFragment extends Fragment {
             mThumbIds.add(String.valueOf(newmovie.id));
         }c.close();
             imageAdapter.updateList(mThumbIds,lastpref);
+        movieposters.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent myintent=new Intent(getActivity().getApplicationContext(),DetailsActivity.class);
+                myintent.putExtra("movie_details", movieItemList.get(i));
+                startActivity(myintent);
+            }
+        });
             mThumbIds=null;
     }
 

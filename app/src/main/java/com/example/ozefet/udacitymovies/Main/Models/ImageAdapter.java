@@ -45,14 +45,14 @@ public class ImageAdapter extends BaseAdapter {
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
-      //  if (convertView == null) {
+        //  if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, (int) height));
           // } else {
           //  imageView = (ImageView) convertView;
-      //  }
+          //  }
         if ("2".equals(lastpref)){  //checking for each image
 
             cw = new ContextWrapper(mContext);

@@ -45,8 +45,6 @@ public class DetailsActivity extends AppCompatActivity {
                 return true;
             case android.R.id.home:
                 super.onBackPressed();
-               // Intent myintent=new Intent(getApplicationContext(),MainActivity.class);
-              //  startActivity(myintent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

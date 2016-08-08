@@ -7,11 +7,14 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.ozefet.udacitymovies.Main.Interfaces.TrailerAPI;
 import com.example.ozefet.udacitymovies.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.w3c.dom.Text;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,6 +43,12 @@ public class TrailerJsonDeserializer {
 
             @Override
             public void onResponse(Call<TrailerResults> call, final Response<TrailerResults> response) {
+                if (response.body().trailer_item_results.size()==0){
+                    final TextView title_text = (TextView) view.findViewById(R.id.videos_title);
+                    title_text.setVisibility(View.GONE);
+
+                }
+                else{
                 for(int i=0;i< response.body().trailer_item_results.size();i++) {
                     Button myButton = new Button(view.getContext());
                     myButton.setText((response.body().trailer_item_results.get(i).name));
@@ -59,7 +68,7 @@ public class TrailerJsonDeserializer {
 
                                                      }
                         );
-                    }
+                    }}
             }
 
 

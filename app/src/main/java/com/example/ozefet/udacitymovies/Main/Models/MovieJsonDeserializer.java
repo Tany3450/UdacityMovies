@@ -6,6 +6,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.ozefet.udacitymovies.Main.Activities.DetailsActivity;
 import com.example.ozefet.udacitymovies.Main.Interfaces.MovieAPI;
@@ -46,6 +47,9 @@ public  class MovieJsonDeserializer {
 
                 @Override
                 public void onResponse(Call<MovieResults> call, final Response<MovieResults> response) {
+                    if(response.body().movie_item_results.size()<=1){final TextView title_text = (TextView) view.findViewById(R.id.similar_posters_title);
+                        title_text.setVisibility(View.GONE);}
+                    else {
                     LinearLayout layout=null; List<String> mThumbIds=new ArrayList<String>();
                     if (operationid==1){layout = (LinearLayout) view.findViewById(R.id.similar_posters);}
                     for(int i=0;i< response.body().movie_item_results.size();i++) {
@@ -66,6 +70,7 @@ public  class MovieJsonDeserializer {
                                                              public void onClick(View v1) {
                                                                  Intent myintent = new Intent(view.getContext().getApplicationContext(), DetailsActivity.class);
                                                                  myintent.putExtra("movie_details", movieItemList.get(finalI));
+                                                                 myintent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                                                                  view.getContext().startActivity(myintent);
 
                                                              }
@@ -87,13 +92,11 @@ public  class MovieJsonDeserializer {
                         movieposters.setAdapter(imageAdapter);
                         imageAdapter.updateList(mThumbIds,"0");
                     }
-                }
+                }}
 
                 @Override
-                public void onFailure(Call<MovieResults> call, Throwable t) {
-                    String a="";
-                }
+                public void onFailure(Call<MovieResults> call, Throwable t)
+                {    String test="";}
             });
     }
-
 }
