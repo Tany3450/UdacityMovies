@@ -1,20 +1,10 @@
 package com.example.ozefet.udacitymovies.Main.Models;
 
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
 import com.example.ozefet.udacitymovies.Main.Interfaces.TrailerAPI;
-import com.example.ozefet.udacitymovies.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.w3c.dom.Text;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,54 +17,36 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class TrailerJsonDeserializer {
 
-    public void JsonDeserializerTrailer(final View view, String url){
-        final LinearLayout layout = (LinearLayout) view.findViewById(R.id.movie_info_layout);
+    public interface Listener {
+        void onCompleteTrailer(List<TrailerItem> trailerItems);
+    }
+
+    private Listener listener;
+
+    public TrailerJsonDeserializer(Listener listener) {
+        this.listener = listener;
+    }
+
+    public void JsonDeserializerTrailer(String url) {
         Gson gson = new GsonBuilder().create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.themoviedb.org/3/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-        // prepare call in Retrofit 2.0
-        TrailerAPI trailerAPI = retrofit.create(TrailerAPI.class);
         TrailerAPI apiService = retrofit.create(TrailerAPI.class);
         Call<TrailerResults> call = apiService.loadtrailers(url);
-        //asynchronous call
-        call.enqueue( new Callback<TrailerResults>(){
+        call.enqueue(new Callback<TrailerResults>() {
 
             @Override
             public void onResponse(Call<TrailerResults> call, final Response<TrailerResults> response) {
-                if (response.body().trailer_item_results.size()==0){
-                    final TextView title_text = (TextView) view.findViewById(R.id.videos_title);
-                    title_text.setVisibility(View.GONE);
 
-                }
-                else{
-                for(int i=0;i< response.body().trailer_item_results.size();i++) {
-                    Button myButton = new Button(view.getContext());
-                    myButton.setText((response.body().trailer_item_results.get(i).name));
-                    myButton.setBackgroundColor(Color.TRANSPARENT);
-                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    Drawable img = view.getContext().getResources().getDrawable(android.R.drawable.ic_media_play);
-                    myButton.setCompoundDrawablesWithIntrinsicBounds( null, img, null, null);
-                    layout.addView(myButton, lp);
-                    final int finalI = i;
-                    myButton.setOnClickListener(new View.OnClickListener() {
-
-                                                         @Override
-                                                         public void onClick(View v1) {
-                                                             view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v="+response.body().trailer_item_results.get(finalI).key)));
-
-                                                         }
-
-                                                     }
-                        );
-                    }}
+                listener.onCompleteTrailer(response.body().trailer_item_results);
             }
 
 
             @Override
             public void onFailure(Call<TrailerResults> call, Throwable t) {
-                String a="";
+
             }
         });
     }

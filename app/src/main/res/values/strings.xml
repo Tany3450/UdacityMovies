@@ -1,12 +1,15 @@
 <resources>
     <string name="app_name">UdacityMovies</string>
     <string name="settings_title">Settings</string>
-    <string name="title_movie_order">Sort by</string>
+    <string name="search_results_title">Results for:</string>
+    <string name="title_movie_order">Default Tab</string>
     <string name="favorited">Favorited</string>
     <string name="mark_as_favorite">MARK AS FAVORITE</string>
     <string name="summary">Summary</string>
     <string name="search_title">Search</string>
     <string name="details_title">Details</string>
+    <string name="popular">Popular</string>
+    <string name="topRated">Top Rated</string>
     <string name="general_settings_title">General</string>
     <string name="api_key" translatable="false">8843b049a06411f051b8cc5857095472</string>
     <string-array name="entries_list_preference_movie_order">

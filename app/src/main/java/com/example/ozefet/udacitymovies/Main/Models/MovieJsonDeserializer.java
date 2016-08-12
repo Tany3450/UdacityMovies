@@ -1,21 +1,18 @@
 package com.example.ozefet.udacitymovies.Main.Models;
 
-import android.content.Intent;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.example.ozefet.udacitymovies.Main.Activities.DetailsActivity;
 import com.example.ozefet.udacitymovies.Main.Interfaces.MovieAPI;
-import com.example.ozefet.udacitymovies.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.picasso.Picasso;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 
-import java.util.ArrayList;
+import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,74 +26,50 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 
-public  class MovieJsonDeserializer {
-    public void JsonDeserializerMovie(final int operationid, final View view, final int movieid, String url){
-        final List<MovieItem> movieItemList=new ArrayList<MovieItem>();
+public class MovieJsonDeserializer {
 
-            Gson gson = new GsonBuilder().create();
-            Retrofit retrofit = new Retrofit.Builder()
+    public interface Listener {
+        void onCompleteMovieList(List<MovieItem> movieItems);
+    }
+
+    private Listener listener;
+
+    public MovieJsonDeserializer(Listener listener) {
+        this.listener = listener;
+    }
+
+    public void JsonDeserializerMovie(String url) {
+
+        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+            @Override
+            public Date deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context)
+                    throws JsonParseException {
+                try {
+                    return df.parse(json.getAsString());
+                } catch (ParseException e) {
+                    return null;
+                }
+            }
+        }).create();
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.themoviedb.org/3/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-            // prepare call in Retrofit 2.0
-            MovieAPI movieAPI = retrofit.create(MovieAPI.class);
-            MovieAPI apiService = retrofit.create(MovieAPI.class);
-            Call<MovieResults> call = apiService.loadmovies(url);
-            //asynchronous call
-            call.enqueue( new Callback<MovieResults>(){
+        MovieAPI apiService = retrofit.create(MovieAPI.class);
+        Call<MovieResults> call = apiService.loadmovies(url);
+        call.enqueue(new Callback<MovieResults>() {
+            @Override
+            public void onResponse(Call<MovieResults> call, final Response<MovieResults> response) {
 
-                @Override
-                public void onResponse(Call<MovieResults> call, final Response<MovieResults> response) {
-                    if(response.body().movie_item_results.size()<=1){final TextView title_text = (TextView) view.findViewById(R.id.similar_posters_title);
-                        title_text.setVisibility(View.GONE);}
-                    else {
-                    LinearLayout layout=null; List<String> mThumbIds=new ArrayList<String>();
-                    if (operationid==1){layout = (LinearLayout) view.findViewById(R.id.similar_posters);}
-                    for(int i=0;i< response.body().movie_item_results.size();i++) {
-                        if (operationid==0){movieItemList.add(response.body().movie_item_results.get(i)); mThumbIds.add("http://image.tmdb.org/t/p/w185"+response.body().movie_item_results.get(i).poster_url);}
-                        else if(operationid==1){
-                        if(response.body().movie_item_results.get(i).id!=movieid) {
-                            movieItemList.add(response.body().movie_item_results.get(i));
-                            ImageView imageView = new ImageView(view.getContext());
-                            imageView.setId(i);
-                            imageView.setPadding(5, 5, 5, 5);
-                            Picasso.with(view.getContext()).load("http://image.tmdb.org/t/p/w185/" + response.body().movie_item_results.get(i).poster_url).resize(250, 350).into(imageView);
-                            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                            layout.addView(imageView);
-                            final int finalI = i;
-                            imageView.setOnClickListener(new View.OnClickListener() {
+                listener.onCompleteMovieList(response.body().movie_item_results);
+            }
 
-                                                             @Override
-                                                             public void onClick(View v1) {
-                                                                 Intent myintent = new Intent(view.getContext().getApplicationContext(), DetailsActivity.class);
-                                                                 myintent.putExtra("movie_details", movieItemList.get(finalI));
-                                                                 myintent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                                                                 view.getContext().startActivity(myintent);
-
-                                                             }
-
-                                                         }
-                            );
-                        }else {movieItemList.add(null);} }}
-                    if(operationid==0){GridView movieposters = (GridView) view.findViewById(R.id.movieposters_gridview);
-                        movieposters.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                        {
-                            @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                Intent myintent=new Intent(view.getContext().getApplicationContext(),DetailsActivity.class);
-                                myintent.putExtra("movie_details", movieItemList.get(i));
-                                view.getContext().startActivity(myintent);
-                            }
-                        });
-                        ImageAdapter imageAdapter= new ImageAdapter(view.getContext());
-                        movieposters.setAdapter(imageAdapter);
-                        imageAdapter.updateList(mThumbIds,"0");
-                    }
-                }}
-
-                @Override
-                public void onFailure(Call<MovieResults> call, Throwable t)
-                {    String test="";}
-            });
+            @Override
+            public void onFailure(Call<MovieResults> call, Throwable t) {
+                listener.onCompleteMovieList(null);
+            }
+        });
     }
 }

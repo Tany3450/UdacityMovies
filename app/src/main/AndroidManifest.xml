@@ -22,6 +22,9 @@
             android:name=".Main.Settings.SettingsActivity"
             android:label="@string/settings_title"></activity>
         <activity android:name=".Main.Activities.DetailsActivity" android:label="@string/details_title"></activity>
+        <activity
+            android:name=".Main.Activities.SearchActivity"
+            android:label="@string/search_title"></activity>
     </application>
 
 </manifest>
